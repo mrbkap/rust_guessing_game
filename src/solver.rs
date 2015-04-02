@@ -1,7 +1,7 @@
-#![feature(old_io)]
 use std::old_io;
 
-pub fn solve(stdin : &mut old_io::stdio::StdinReader) {
+pub fn solve(stdin : &mut old_io::stdio::StdinReader,
+             stdout : &mut old_io::LineBufferedWriter<old_io::stdio::StdWriter>) {
     let mut line = stdin.read_line()
                    .ok()
                    .expect("Failed to read first line");
@@ -24,7 +24,7 @@ pub fn solve(stdin : &mut old_io::stdio::StdinReader) {
         assert_eq!(line.trim(), "Please input your guess.");
 
         let guess : u32 = ((max_goal - min) / 2) + min;
-        println!("{} ({} rem)", guess, max_goal - min);
+        writeln!(stdout, "{} ({} rem)", guess, max_goal - min);
 
         line = stdin.read_line()
                     .ok()
@@ -33,11 +33,11 @@ pub fn solve(stdin : &mut old_io::stdio::StdinReader) {
             "You guessed too low" => min = guess + 1,
             "You guessed too high" => max_goal = guess - 1,
             "You got it!" => {
-                println!("Done in {} tries!", tries);
+                writeln!(stdout, "Done in {} tries!", tries);
                 return;
             },
             _ => {
-                println!("Unexpected input!");
+                stdout.write_line("Unexpected input!");
                 return;
             }
         }
