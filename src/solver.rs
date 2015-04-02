@@ -1,14 +1,11 @@
 use std::old_io;
 
-pub fn solve(stdin : &mut old_io::stdio::StdinReader,
-             stdout : &mut old_io::LineBufferedWriter<old_io::stdio::StdWriter>) {
-    let mut line = stdin.read_line()
-                   .ok()
-                   .expect("Failed to read first line");
+pub fn solve<R, W>(stdin : &mut old_io::BufferedReader<R>,
+                   stdout : &mut old_io::BufferedWriter<W>)
+  where R: old_io::Reader, W: old_io::Writer {
+    let mut line = stdin.read_line().unwrap();
     assert_eq!(line.trim(), "Guess the number!");
-    line = stdin.read_line()
-                .ok()
-                .expect("Failed to read max number");
+    line = stdin.read_line().unwrap();
 
     let mut min : u32 = 1;
     let mut max_goal : u32 =
@@ -18,26 +15,22 @@ pub fn solve(stdin : &mut old_io::stdio::StdinReader,
     let mut tries = 1u32;
 
     loop {
-        line = stdin.read_line()
-                    .ok()
-                    .expect("Not expecting an input?");
+        line = stdin.read_line().unwrap();
         assert_eq!(line.trim(), "Please input your guess.");
 
         let guess : u32 = ((max_goal - min) / 2) + min;
-        writeln!(stdout, "{} ({} rem)", guess, max_goal - min);
+        writeln!(stdout, "{} ({} rem)", guess, max_goal - min).unwrap();
 
-        line = stdin.read_line()
-                    .ok()
-                    .expect("No response?");
+        line = stdin.read_line().unwrap();
         match line.trim() {
             "You guessed too low" => min = guess + 1,
             "You guessed too high" => max_goal = guess - 1,
             "You got it!" => {
-                writeln!(stdout, "Done in {} tries!", tries);
+                writeln!(stdout, "Done in {} tries!", tries).unwrap();
                 return;
             },
             _ => {
-                stdout.write_line("Unexpected input!");
+                stdout.write_line("Unexpected input!").unwrap();
                 return;
             }
         }
