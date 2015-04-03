@@ -1,36 +1,42 @@
-use std::old_io;
+use std::io;
+use std::io::{Read,Write};
+use std::io::BufRead;
 
-pub fn solve<R, W>(stdin : &mut old_io::BufferedReader<R>,
-                   stdout : &mut old_io::BufferedWriter<W>)
-  where R: old_io::Reader, W: old_io::Writer {
-    let mut line = stdin.read_line().unwrap();
+pub fn solve<R, W>(stdin : &mut io::BufReader<R>,
+                   stdout : &mut io::BufWriter<W>)
+   where R: io::Read, W: io::Write {
+    let mut line : String = String::new();
+    stdin.read_line(&mut line).unwrap();
     assert_eq!(line.trim(), "Guess the number!");
-    line = stdin.read_line().unwrap();
 
-    let mut min : u32 = 1;
-    let mut max_goal : u32 =
-            line.trim().parse()
-                       .ok()
-                       .expect("max goal wasn't a number");
-    let mut tries = 1u32;
+    line.truncate(0);
+    stdin.read_line(&mut line).unwrap();
+
+    let mut min: u32 = 1;
+    let mut max_goal: u32 = line.trim().parse().unwrap();
+    let mut tries: u32 = 1;
 
     loop {
-        line = stdin.read_line().unwrap();
+        line.truncate(0);
+        stdin.read_line(&mut line).unwrap();
         assert_eq!(line.trim(), "Please input your guess.");
 
         let guess : u32 = ((max_goal - min) / 2) + min;
-        writeln!(stdout, "{} ({} rem)", guess, max_goal - min).unwrap();
+        println!("{} ({} rem)", guess, max_goal - min);
+        writeln!(stdout, "{}", guess).unwrap();
+        stdout.flush().unwrap();
 
-        line = stdin.read_line().unwrap();
+        line.truncate(0);
+        stdin.read_line(&mut line).unwrap();
         match line.trim() {
             "You guessed too low" => min = guess + 1,
             "You guessed too high" => max_goal = guess - 1,
             "You got it!" => {
-                writeln!(stdout, "Done in {} tries!", tries).unwrap();
+                println!("Done in {} tries (answer: {})!", tries, guess);
                 return;
             },
             _ => {
-                stdout.write_line("Unexpected input!").unwrap();
+                println!("Unexpected input!");
                 return;
             }
         }

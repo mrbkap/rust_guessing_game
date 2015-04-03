@@ -1,9 +1,8 @@
-#![feature(old_io)]
 #![feature(env)]
-use std::old_io;
-use std::old_io::process;
-use std::old_io::Command;
-
+#![feature(io)]
+#![feature(process)]
+#![feature(core)]
+use std::process::{Command, Stdio};
 use std::env;
 
 mod solver;
@@ -19,15 +18,19 @@ fn main() {
     let path = args.next().unwrap();
 
     println!("Running {}", path);
-    let mut child = Command::new(path).stderr(std::old_io::process::InheritFd(2))
-                                      .stdout(old_io::process::CreatePipe(false, true))
-                                      .stdin(old_io::process::CreatePipe(true, false))
-                                      .spawn()
-                                      .unwrap();
+    let mut child = Command::new(path.as_slice()).stderr(Stdio::inherit())
+                                                 .stdout(Stdio::capture())
+                                                 .stdin(Stdio::capture())
+                                                 .spawn()
+                                                 .unwrap();
 
-    let stdin = child.stdin.as_mut().unwrap();
-    let stdout = child.stdout.as_mut().unwrap();
+    {
+        let mut stdin = child.stdin.as_mut().unwrap();
+        let mut stdout = child.stdout.as_mut().unwrap();
 
-    solver::solve(&mut old_io::BufferedReader::new(stdin),
-                  &mut old_io::BufferedWriter::new(stdout));
+        solver::solve(&mut std::io::BufReader::new(&mut stdout),
+                      &mut std::io::BufWriter::new(&mut stdin));
+    }
+
+    child.wait().unwrap();
 }
