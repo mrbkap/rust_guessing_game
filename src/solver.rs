@@ -34,7 +34,8 @@ pub fn solve<R, W>(stdin: &mut io::BufReader<R>,
             "You guessed too low" => min = guess + 1,
             "You guessed too high" => max = guess - 1,
             "You got it!" => {
-                println!("Done in {} tries (answer: {})!", tries, guess);
+                let tries_str = if tries == 1 { "try" } else { "tries" };
+                println!("Done in {} {} (answer: {})!", tries, tries_str, guess);
                 return;
             },
             _ => {
