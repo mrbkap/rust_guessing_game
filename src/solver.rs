@@ -2,9 +2,8 @@ use std::io;
 use std::io::{Read,Write};
 use std::io::BufRead;
 
-pub fn solve<R, W>(stdin: &mut io::BufReader<R>,
-                   stdout: &mut io::BufWriter<W>)
-   where R: io::Read, W: io::Write {
+pub fn solve<R: io::Read, W: io::Write>(stdin: &mut io::BufReader<R>,
+                                        stdout: &mut io::BufWriter<W>) {
     let mut line: String = String::new();
     stdin.read_line(&mut line).unwrap();
     assert_eq!(line.trim(), "Guess the number!");
@@ -12,9 +11,9 @@ pub fn solve<R, W>(stdin: &mut io::BufReader<R>,
     line.truncate(0);
     stdin.read_line(&mut line).unwrap();
 
-    let mut min: u32 = 1;
-    let mut max: u32 = line.trim().parse().unwrap();
-    let mut tries: u32 = 1;
+    let mut min: u64 = 1;
+    let mut max: u64 = line.trim().parse().unwrap();
+    let mut tries: u64 = 1;
 
     println!("Maximum is {}", max);
 
@@ -23,7 +22,7 @@ pub fn solve<R, W>(stdin: &mut io::BufReader<R>,
         stdin.read_line(&mut line).unwrap();
         assert_eq!(line.trim(), "Please input your guess.");
 
-        let guess: u32 = ((max - min) / 2) + min;
+        let guess: u64 = ((max - min) / 2) + min;
         println!("{} ({} remaining)", guess, max - min);
         writeln!(stdout, "{}", guess).unwrap();
         stdout.flush().unwrap();

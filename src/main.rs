@@ -1,7 +1,3 @@
-#![feature(env)]
-#![feature(io)]
-#![feature(process)]
-#![feature(core)]
 use std::process::{Command, Stdio};
 use std::env;
 
@@ -18,11 +14,11 @@ fn main() {
     let path = args.next().unwrap();
 
     println!("Running {}", path);
-    let mut child = Command::new(path.as_slice()).stderr(Stdio::inherit())
-                                                 .stdout(Stdio::capture())
-                                                 .stdin(Stdio::capture())
-                                                 .spawn()
-                                                 .unwrap();
+    let mut child = Command::new(path).stderr(Stdio::inherit())
+                                      .stdout(Stdio::piped())
+                                      .stdin(Stdio::piped())
+                                      .spawn()
+                                      .unwrap();
 
     {
         let mut stdin = child.stdin.as_mut().unwrap();
