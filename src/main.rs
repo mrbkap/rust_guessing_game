@@ -1,21 +1,24 @@
-#![feature(rand)]
-#![feature(old_io)]
-use std::old_io;
-use std::rand;
+use std::io;
+use rand::Rng;
 use std::cmp::Ordering;
 
-fn main() {
-    println!("Guess the number!");
+extern crate rand;
 
-    let goal = (rand::random::<u32>() % 10) + 1;
+fn main() {
+    let max_goal = rand::random::<u64>() + 1;
+    println!("Guess the number!\n{}", max_goal);
+
+    let mut rng = rand::thread_rng();
+    let goal = (rng.gen::<u64>() % max_goal) + 1;
 
     loop {
         println!("Please input your guess.");
-        let input = old_io::stdin().read_line()
-                        .ok()
-                        .expect("Failed to read line");
+        let mut input = String::new();
+        io::stdin().read_line(&mut input)
+                   .ok()
+                   .expect("Failed to read line");
 
-        let input_num: Result<u32, _>  = input.trim().parse();
+        let input_num: Result<u64, _>  = input.trim().parse();
         let num = match input_num {
             Ok(num) => num,
             Err(_) => {
@@ -36,7 +39,7 @@ fn main() {
 
 }
 
-fn cmp(l: u32, r: u32) -> Ordering {
+fn cmp(l: u64, r: u64) -> Ordering {
     if l < r { Ordering::Less }
     else if r < l { Ordering::Greater }
     else { Ordering::Equal }
