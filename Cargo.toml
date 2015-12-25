@@ -7,5 +7,9 @@ authors = ["Blake Kaplan <mrbkap@gmail.com>"]
 rand = "0.3"
 
 [[bin]]
+name = "guessing_game"
+path = "src/main.rs"
+
+[[bin]]
 name = "solver"
 path = "solver/main.rs"

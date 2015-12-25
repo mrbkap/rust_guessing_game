@@ -4,15 +4,13 @@ use std::env;
 mod solver;
 
 fn main() {
-    if env::args().len() != 2 {
+    let mut args = env::args();
+    if args.len() < 2 {
         panic!("Usage: {} <path to guessing game>",
                env::args().nth(0).unwrap());
     }
 
-    let mut args = env::args();
-    args.next();
-
-    let path = args.next().unwrap();
+    let path = args.nth(1).unwrap();
 
     println!("Running {}", path);
     let mut child = Command::new(path).stderr(Stdio::inherit())
