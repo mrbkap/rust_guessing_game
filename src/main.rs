@@ -5,7 +5,8 @@ mod solver;
 
 fn main() {
     if env::args().len() != 2 {
-        panic!("Expected path to guessing_game");
+        panic!("Usage: {} <path to guessing game>",
+               env::args().nth(0).unwrap());
     }
 
     let mut args = env::args();
